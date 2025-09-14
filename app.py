@@ -127,26 +127,35 @@ if source_image:
     lines.append(current_line)
     wrapped_text = "\n".join(lines)
 
+    # 텍스트 블록의 전체 크기 계산
     text_bbox = draw.multiline_textbbox((0, 0), wrapped_text, font=font, align='center')
+    text_width = text_bbox[2] - text_bbox[0]
     text_height = text_bbox[3] - text_bbox[1]
-    text_y_start = (CANVAS_SIZE[1] - text_height) / 2
+
+    # 텍스트를 그릴 영역의 너비 계산
+    text_area_width = CANVAS_SIZE[0] - text_x_start - 25  # 오른쪽 여백 고려
+
+    # 텍스트 블록을 수평 및 수직 중앙에 배치하기 위한 시작 좌표 계산
+    centered_x = text_x_start + (text_area_width - text_width) / 2
+    centered_y = (CANVAS_SIZE[1] - text_height) / 2
 
     # 메인 트윗 내용 그리기
     draw.multiline_text(
-        (text_x_start, text_y_start), wrapped_text, font=font,
+        (centered_x, centered_y), wrapped_text, font=font,
         fill=(255, 255, 255, 255), align='center'
     )
     
+    # 닉네임의 너비 계산
     nickname_bbox = draw.textbbox((0, 0), tweet_nickname, font=nickname_font)
     nickname_width = nickname_bbox[2] - nickname_bbox[0]
 
-    text_area_width = CANVAS_SIZE[0] - text_x_start
+    # 닉네임을 메인 텍스트 블록의 중앙에 맞추어 위치 계산
+    nickname_x = centered_x + (text_width - nickname_width) / 2
+    nickname_y = centered_y + text_height + 15 # 텍스트 아래 15px 간격
 
-    nickname_x_start = text_x_start + (text_area_width - nickname_width) / 2 - 20
-    nickname_y_start = text_y_start + text_height + 15
-
+    # 닉네임 그리기
     draw.text(
-        (nickname_x_start, nickname_y_start),
+        (nickname_x, nickname_y),
         tweet_nickname,
         font=nickname_font,
         fill=(150, 150, 150, 255), # 회색
