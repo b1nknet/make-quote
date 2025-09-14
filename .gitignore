@@ -1,5 +1,6 @@
 .venv
 
-cookies.txt
-
 test
+
+*.png
+cookies.txt
